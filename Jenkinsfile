@@ -15,7 +15,7 @@ pipeline {
             case "$APP_HOST" in
               ""|3.25.125.216); exit 1 ;;
             esac
-            ssh -o StrictHostKeyChecking=accept-new ubuntu@"$APP_HOST" 'if [ -d /home/ubuntu/fullstack-cicd-project/.git ]; then cd /home/ubuntu/fullstack-cicd-project && git pull --ff-only origin main; else git clone https://github.com/YOUR_GITHUB_USERNAME/fullstack-cicd-project.git /home/ubuntu/fullstack-cicd-project; fi && cd /home/ubuntu/fullstack-cicd-project && sudo docker compose up -d --build --remove-orphans && curl -fsS http://localhost/api/health'
+            ssh -o StrictHostKeyChecking=accept-new ubuntu@"$APP_HOST" 'if [ -d /home/ubuntu/fullstack-cicd-project/.git ]; then cd /home/ubuntu/fullstack-cicd-project && git pull --ff-only origin main; else git clone https://github.com/laveenakash/AWS-EC2_Instances-01.git /home/ubuntu/fullstack-cicd-project; fi && cd /home/ubuntu/fullstack-cicd-project && sudo docker compose up -d --build --remove-orphans && curl -fsS http://localhost/api/health'
           '''
         }
       }

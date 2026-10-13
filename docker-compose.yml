@@ -15,7 +15,7 @@ services:
     expose: ["5000"]
     restart: unless-stopped
   mongo:
-    image: mongo:8
+    image: mongo:7.0
     volumes: [mongo_data:/data/db]
     expose: ["27017"]
     healthcheck:
