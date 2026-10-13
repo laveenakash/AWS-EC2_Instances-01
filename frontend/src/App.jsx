@@ -1,0 +1,12 @@
+import { useEffect, useState } from 'react';
+const API = '/api/tasks';
+export default function App() {
+  const [tasks, setTasks] = useState([]); const [title, setTitle] = useState('');
+  const [error, setError] = useState(''); const [loading, setLoading] = useState(true);
+  async function loadTasks() { try { const r = await fetch(API); if (!r.ok) throw Error(); setTasks(await r.json()); setError(''); } catch { setError('Cannot connect to the API. Please try again.'); } finally { setLoading(false); } }
+  useEffect(() => { loadTasks(); }, []);
+  async function addTask(e) { e.preventDefault(); if (!title.trim()) return; try { const r = await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({title:title.trim()})}); if (!r.ok) throw Error(); const task=await r.json(); setTasks(v=>[task,...v]); setTitle(''); setError(''); } catch { setError('Task could not be saved.'); } }
+  async function toggleTask(task) { try { const r=await fetch(`${API}/${task._id}`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({completed:!task.completed})}); if(!r.ok) throw Error(); const updated=await r.json(); setTasks(v=>v.map(x=>x._id===updated._id?updated:x)); setError(''); } catch { setError('Task could not be updated.'); } }
+  const completed=tasks.filter(t=>t.completed).length;
+  return <main className="page"><section className="panel"><p className="eyebrow">DEVOPS PROJECT</p><h1>Task Manager</h1><p className="subtitle">A full-stack application deployed with an automated CI/CD pipeline.</p><div className="stats"><div><strong>{tasks.length}</strong><span>Total tasks</span></div><div><strong>{completed}</strong><span>Completed</span></div><div><strong>{tasks.length-completed}</strong><span>Remaining</span></div></div><form onSubmit={addTask}><input value={title} onChange={e=>setTitle(e.target.value)} placeholder="What needs to be done?" aria-label="New task" maxLength={200}/><button type="submit">Add task</button></form>{error&&<p className="error" role="alert">{error}</p>}<div className="task-list">{loading?<p>Loading tasks...</p>:tasks.length===0?<p className="empty">No tasks yet. Add your first task!</p>:tasks.map(t=><label className="task" key={t._id}><input type="checkbox" checked={t.completed} onChange={()=>toggleTask(t)}/><span className={t.completed?'done':''}>{t.title}</span></label>)}</div><footer>React · Node.js · MongoDB · Docker · Jenkins</footer></section></main>;
+}

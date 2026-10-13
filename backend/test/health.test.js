@@ -1,0 +1,2 @@
+const test=require('node:test'); const assert=require('node:assert/strict'); const http=require('node:http'); const app=require('../src/server');
+test('health endpoint returns healthy status',async()=>{const server=http.createServer(app);await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));try{const a=server.address();const r=await fetch(`http://127.0.0.1:${a.port}/api/health`);assert.equal(r.status,200);assert.deepEqual(await r.json(),{status:'healthy'})}finally{await new Promise((resolve,reject)=>server.close(e=>e?reject(e):resolve()))}});
